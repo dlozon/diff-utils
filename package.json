@@ -1,0 +1,25 @@
+{
+  "name": "diff-utils",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo Not Implemented"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dlozon/diff-utils.git"
+  },
+  "author": "dlozon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dlozon/diff-utils/issues"
+  },
+  "homepage": "https://github.com/dlozon/diff-utils#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "typescript": "^5.7.3"
+  }
+}
