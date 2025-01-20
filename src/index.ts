@@ -14,7 +14,7 @@ export function createDiff(oldObj: Record<string, any>, newObj: Record<string, a
     // Process keys in the old object
     for (const key in oldObj) {
         // If key is a nested json attempt to recursively add its changes to the diff
-        if (typeof oldObj[key] === 'object' && newObj[key] !== null) {
+        if (typeof oldObj[key] === 'object' && newObj[key] != null) {
             const subDiff = createDiff(oldObj[key], newObj[key]);
             if (Object.keys(subDiff).length > 0) 
                 diff[key] = subDiff;
