@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "echo Not Implemented"
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
