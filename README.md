@@ -12,7 +12,7 @@ npm i @gallagher-kaiser/diff-utils
 ## Usage
 
 ```ts
-import { createDiff, applyDiff, applyDiffs } from 'gk-diff-utils';
+import { createDiff, applyDiff, applyDiffs } from '@gallagher-kaiser/diff-utils';
 
 const revision1 = { "name": "Destiny Hope Cyrus", "Location": "Tenessee" };
 const revision2 = { "name": "Destiny Hope Cyrus", "Location": "California" };
