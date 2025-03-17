@@ -1,8 +1,8 @@
 {
   "name": "@gallagher-kaiser/diff-utils",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "npx jest"
@@ -18,6 +18,11 @@
   },
   "homepage": "https://github.com/dlozon/diff-utils#readme",
   "description": "",
+  "files": [
+    "dist",
+    "index.d.ts",
+    "LICENSE"
+  ],
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.6",

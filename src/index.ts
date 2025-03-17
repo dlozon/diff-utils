@@ -1,4 +1,3 @@
-
 /** Creates a diff object that represents the changes between two objects.
  *
  * @param oldObj - The original object.
