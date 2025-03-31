@@ -29,7 +29,7 @@ const regenerated = applyDiff(revision3, diff2);
 const regeneratedFromBatch = applyDiffs(revision3, [diff2, diff1]);
 
 // Iterate over the properties of diff1 and print the changelog
-for (const { key, oldValue, newValue } of diffIterator(diff1)) {
+for (const { path, key, oldValue, newValue } of diffIterator(diff1)) {
     console.log(`Modified key '${key}': ${oldValue} -> ${newValue}`);
 }
 ```

@@ -77,20 +77,49 @@ export function applyDiffs(sourceObject: Record<string, any>, diffs: Record<stri
     return diffs.reduce((currentObject, diff) => applyDiff(currentObject, diff), sourceObject);
 }
 
-/** Generates an iterator for retrieving the differences between two objects.
+/** 
+ * @generator Iterates through a diff object and yields the differences found.
  *
- * @param diff A record containing the differences between two objects. Each key in the record represents a property that has changed,
- *             and the value is an object containing the `oldValue` and `newValue` for that property.
- * @returns A generator that yields objects, each containing the `key`, `oldValue`, and `newValue` for a changed property.
+ * @param {Record<string, any>} diff The diff object to iterate through. The diff object is expected to have a structure where each key represents a property that has changed.
+ *                                    If a value is an object itself (and not an array or null), it's treated as a nested diff and the function recurses into it.
+ *                                    Otherwise, the value is expected to be an object with `oldValue` and `newValue` properties representing the changes.
+ * @param {string[]} [path=[]] The path to the current diff object. This is used to keep track of the location of the diff in the original object.
+ *
+ * @yields {{ path: string[], key: string, oldValue: any, newValue: any }} An object representing a single difference found in the diff object.
+ *         The object contains the key of the property that has changed, the old and new values of the property, and the path to the property in the original object.
+ *
+ * @example
+ * const diff = {
+ *   name: { oldValue: 'John', newValue: 'Jane' },
+ *   address: {
+ *     street: { oldValue: '123 Main St', newValue: '456 Elm St' }
+ *   }
+ * };
+ *
+ * for (const change of diffIterator(diff)) {
+ *   console.log(change);
+ * }
+ * // Expected output:
+ * // { key: 'name', oldValue: 'John', newValue: 'Jane', path: ['name'] }
+ * // { key: 'street', oldValue: '123 Main St', newValue: '456 Elm St', path: ['address', 'street'] }
  */
-export function* diffIterator(diff: Record<string, any>): Generator<{ key: string, oldValue: any, newValue: any }> {
+export function* diffIterator(diff: Record<string, any>, path: string[] = []): Generator<{ key: string, oldValue: any, newValue: any, path: string[] }> {
     for (const key in diff) {
         if (diff.hasOwnProperty(key)) {
-            yield {
-                key: key,
-                oldValue: diff[key].oldValue,
-                newValue: diff[key].newValue
-            };
+            const currentPath = [...path, key];
+            if (typeof diff[key] === 'object' && diff[key] !== null && !Array.isArray(diff[key]) && !diff[key].hasOwnProperty('oldValue')) {
+                // If the value is a sub-object, recursively yield its diffs
+                yield* diffIterator(diff[key], currentPath);
+            }
+            else {
+                // If the value is a primitive, yield the diff
+                yield {
+                    path: currentPath,
+                    key: key,
+                    oldValue: diff[key].oldValue,
+                    newValue: diff[key].newValue,
+                };
+            }
         }
     }
 }
