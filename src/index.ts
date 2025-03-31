@@ -77,6 +77,24 @@ export function applyDiffs(sourceObject: Record<string, any>, diffs: Record<stri
     return diffs.reduce((currentObject, diff) => applyDiff(currentObject, diff), sourceObject);
 }
 
+/** Generates an iterator for retrieving the differences between two objects.
+ *
+ * @param diff A record containing the differences between two objects. Each key in the record represents a property that has changed,
+ *             and the value is an object containing the `oldValue` and `newValue` for that property.
+ * @returns A generator that yields objects, each containing the `key`, `oldValue`, and `newValue` for a changed property.
+ */
+export function* diffIterator(diff: Record<string, any>): Generator<{ key: string, oldValue: any, newValue: any }> {
+    for (const key in diff) {
+        if (diff.hasOwnProperty(key)) {
+            yield {
+                key: key,
+                oldValue: diff[key].oldValue,
+                newValue: diff[key].newValue
+            };
+        }
+    }
+}
+
 // Helper function to determine if an object is array-like
 function isArrayLike(obj: Record<string, any>): boolean {
     const keys = Object.keys(obj);

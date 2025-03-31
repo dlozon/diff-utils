@@ -12,7 +12,7 @@ npm i @gallagher-kaiser/diff-utils
 ## Usage
 
 ```ts
-import { createDiff, applyDiff, applyDiffs } from '@gallagher-kaiser/diff-utils';
+import { createDiff, applyDiff, applyDiffs, diffIterator } from '@gallagher-kaiser/diff-utils';
 
 const revision1 = { "name": "Destiny Hope Cyrus", "Location": "Tenessee" };
 const revision2 = { "name": "Destiny Hope Cyrus", "Location": "California" };
@@ -27,6 +27,11 @@ const regenerated = applyDiff(revision3, diff2);
 
 // Apply multiple diffs to reconstruct revision1 using revision3 as source
 const regeneratedFromBatch = applyDiffs(revision3, [diff2, diff1]);
+
+// Iterate over the properties of diff1 and print the changelog
+for (const { key, oldValue, newValue } of diffIterator(diff1)) {
+    console.log(`Modified key '${key}': ${oldValue} -> ${newValue}`);
+}
 ```
 
 ## Scripts
