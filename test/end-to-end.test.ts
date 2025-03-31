@@ -83,24 +83,28 @@ const revision5 = {
 }
 
 const expectedDiff1 = {
-    revision: 1,
-    a: 0, b: 1, c: 2,
-    array: {1: 'b', 2: 'c'},
-    subObject: { z: 2 }
+    revision: { oldValue: 1, newValue: 2 },
+    a: { oldValue: 0, newValue: 1 },
+    b: { oldValue: 1, newValue: 2 },
+    c: { oldValue: 2, newValue: 3 },
+    array: { 1: { oldValue: 'b', newValue: 'c' }, 2: { oldValue: 'c', newValue: 'd' }},
+    subObject: { z: { oldValue: 2, newValue: null }}
 }
 const expectedDiff2 = {
-    revision: 2,
-    a: 1, b: 2,
-    subObject: { x: 0, y: 1 }
+    revision: { oldValue: 2, newValue: 3 },
+    a: { oldValue: 1, newValue: 0 },
+    b: { oldValue: 2, newValue: 3 },
+    subObject: { x: { oldValue: 0, newValue: 2 }, y: { oldValue: 1, newValue: 0 } }
 }
 const expectedDiff3 = {
-    revision: 3,
-    c: 3, d: '$DELETE',
-    array: {3: '$DELETE'},
-    subObject: { x: 2, y: 0 }
+    revision: { oldValue: 3, newValue: 4 },
+    c: { oldValue: 3, newValue: null },
+    d: { oldValue: null, newValue: 2 },
+    array: { 3: { oldValue: null, newValue: 'c' } },
+    subObject: { oldValue: { x: 2, y: 0 }, newValue: null }
 }
 const expectedDiff4 = {
-    revision: 4,
-    array: ['a', 'c', 'd', 'c'],
-    subObject: '$DELETE'
+    revision: { oldValue: 4, newValue: 5 },
+    array: { oldValue: ['a', 'c', 'd', 'c'], newValue: null },
+    subObject: { oldValue: null, newValue: { array: ['a', 'c', 'd', 'c'] } }
 }

@@ -5,9 +5,9 @@ describe('applyDiffs', () => {
     it('should apply multiple diffs to an object', () => {
         const sourceObject = { a: 1, b: 2, c: 3 };
         const diffs = [
-            { a: 2, d: '$DELETE' },
-            { b: 3, e: 4 },
-            { c: '$DELETE', f: 5 }
+            { a: { newValue: 1, oldValue: 2 }, b: { newValue: 2, oldValue: 6 }},
+            { b: { newValue: 6, oldValue: 3 }, e: { newValue: null, oldValue: 4 }},
+            { c: { newValue: 3, oldValue: null }, f: { newValue: null, oldValue: 5 }}
         ];
         const expectedResult = { a: 2, b: 3, e: 4, f: 5 };
         const result = applyDiffs(sourceObject, diffs);
@@ -17,10 +17,10 @@ describe('applyDiffs', () => {
     it('should handle diffs that add and remove keys', () => {
         const sourceObject = { a: 1, b: 2 };
         const diffs = [
-            { c: 3 },
-            { a: '$DELETE' },
-            { d: 4 },
-            { c: '$DELETE' }
+            { c: { newValue: null, oldValue: 5 } },
+            { a: { newValue: 1, oldValue: null } },
+            { d: { newValue: null, oldValue: 4 } },
+            { c: { newValue: 5, oldValue: null } }
         ];
         const expectedResult = { b: 2, d: 4 };
         const result = applyDiffs(sourceObject, diffs);
@@ -30,9 +30,9 @@ describe('applyDiffs', () => {
     it('should handle nested diffs', () => {
         const sourceObject = { a: { b: 1, c: 2 }, d: 3 };
         const diffs = [
-            { a: { b: 2 } },
-            { a: { c: '$DELETE' } },
-            { e: 4 }
+            { a: { b: { newValue: 1, oldValue: 2 }}},
+            { a: { c: { newValue: 2, oldValue: null }}},
+            { e: { newValue: null, oldValue: 4 }}
         ];
         const expectedResult = { a: { b: 2 }, d: 3, e: 4 };
         const result = applyDiffs(sourceObject, diffs);
@@ -42,9 +42,9 @@ describe('applyDiffs', () => {
     it('should handle array-like objects', () => {
         const sourceObject = ['a', 'b', 'c'];
         const diffs = [
-            { 0: 'x', 1: 'y' },
-            { 2: '$DELETE' },
-            { 2: 'z' }
+            { 0: { newValue: 'a', oldValue: 'x' }, 1: { newValue: 'b', oldValue: 'y' }},
+            { 2: { newValue: 'c', oldValue: null } },
+            { 2: { newValue: null, oldValue: 'z' } }
         ];
         const expectedResult = ['x', 'y', 'z'];
         const result = applyDiffs(sourceObject, diffs);
@@ -64,9 +64,9 @@ describe('edgeCases', () => {
     it('should handle empty source object', () => {
         const sourceObject = {};
         const diffs = [
-            { a: 1 },
-            { b: 2 },
-            { c: 3 }
+            { a: { newValue: null, oldValue: 1 }},
+            { b: { newValue: null, oldValue: 2 }},
+            { c: { newValue: null, oldValue: 3 }}
         ];
         const expectedResult = { a: 1, b: 2, c: 3 };
         const result = applyDiffs(sourceObject, diffs);
