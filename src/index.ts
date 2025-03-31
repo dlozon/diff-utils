@@ -22,7 +22,7 @@ export function createDiff(oldObj: Record<string, any>, newObj: Record<string, a
         else if (JSON.stringify(oldObj[key]) !== JSON.stringify(newObj[key])) {
             diff[key] = {
                 oldValue: oldObj[key],
-                newValue: newObj[key]
+                newValue: newObj[key] ?? null
             };
         }
     }
