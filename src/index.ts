@@ -1,11 +1,11 @@
-/** Creates an object that contains the differences between two versions of an object.
- *
- * @param oldObj - The original object.
- * @param newObj - The new object to diff against the original.
- * @returns A diff object that contains the changes.
- *  If a key is removed, the diff will contain the value from the old object.
- *  If a key is added, the value will be '$DELETE' to signify that the diff must delete the key to regenerate the old object.
- *  If a key is an object, the function will recursively diff that object.
+/** Creates a diff object that represents the differences between two objects.
+ * 
+ * @param oldObj - The previous version of an object
+ * @param newObj - The new version of the object to compare to
+ * @returns A diff object containing the changes between oldObj and newObj.
+ *          For changed values, returns `{ oldValue: any, newValue: any }`.
+ *          For nested objects, recursively includes sub-diffs.
+ *          Only includes keys where values have actually changed.
  */
 export function createDiff(oldObj: Record<string, any>, newObj: Record<string, any>): Record<string, any> {
     const diff: Record<string, any> = {};
@@ -38,9 +38,8 @@ export function createDiff(oldObj: Record<string, any>, newObj: Record<string, a
 /** Applies a diff object to an object.
  *
  * @param sourceObject - The original object to which the diff will be applied.
- * @param diff - The diff object containing changes to be applied.
- *  If a value is '$DELETE', the corresponding key will be removed from the result.
- * @returns A new object with the diff applied.
+ * @param diff - The diff object only containing changes to be applied.
+ * @returns A new object created by applying values from diff to the sourceObject.
  */
 export function applyDiff(sourceObject: Record<string, any>, diff: Record<string, any>): Record<string, any> {
     const result: Record<string, any> = { ...sourceObject };
@@ -71,7 +70,7 @@ export function applyDiff(sourceObject: Record<string, any>, diff: Record<string
  * 
  * @param sourceObject - The original object to which the diffs will be applied.
  * @param diffs - An array of diff objects to be applied in sequence.
- * @returns A new object with all diffs applied.
+ * @returns A new object with all diffs applied sequentially.
  */
 export function applyDiffs(sourceObject: Record<string, any>, diffs: Record<string, any>[]): Record<string, any> {
     return diffs.reduce((currentObject, diff) => applyDiff(currentObject, diff), sourceObject);
@@ -83,25 +82,11 @@ export function applyDiffs(sourceObject: Record<string, any>, diffs: Record<stri
  * @param {Record<string, any>} diff The diff object to iterate through. The diff object is expected to have a structure where each key represents a property that has changed.
  *                                    If a value is an object itself (and not an array or null), it's treated as a nested diff and the function recurses into it.
  *                                    Otherwise, the value is expected to be an object with `oldValue` and `newValue` properties representing the changes.
- * @param {string[]} [path=[]] The path to the current diff object. This is used to keep track of the location of the diff in the original object.
+ * @param {string[]} [path=[]] The path to the current diff object. This is used to keep track of the location of the diff in the original object. 
+ *                             Leave empty to iterate over the entire object.
  *
  * @yields {{ path: string[], key: string, oldValue: any, newValue: any }} An object representing a single difference found in the diff object.
  *         The object contains the key of the property that has changed, the old and new values of the property, and the path to the property in the original object.
- *
- * @example
- * const diff = {
- *   name: { oldValue: 'John', newValue: 'Jane' },
- *   address: {
- *     street: { oldValue: '123 Main St', newValue: '456 Elm St' }
- *   }
- * };
- *
- * for (const change of diffIterator(diff)) {
- *   console.log(change);
- * }
- * // Expected output:
- * // { key: 'name', oldValue: 'John', newValue: 'Jane', path: ['name'] }
- * // { key: 'street', oldValue: '123 Main St', newValue: '456 Elm St', path: ['address', 'street'] }
  */
 export function* diffIterator(diff: Record<string, any>, path: string[] = []): Generator<{ key: string, oldValue: any, newValue: any, path: string[] }> {
     for (const key in diff) {
@@ -124,7 +109,7 @@ export function* diffIterator(diff: Record<string, any>, path: string[] = []): G
     }
 }
 
-// Helper function to determine if an object is array-like
+/** @returns if the input is an array-like structure */
 function isArrayLike(obj: Record<string, any>): boolean {
     const keys = Object.keys(obj);
     return keys.length > 0 && keys.every((key, index) => key === index.toString());
